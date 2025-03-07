@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const app = express();
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 const port = process.env.PORT || 5000;
@@ -39,6 +39,21 @@ async function run() {
       const cursor = visaCollection.find().sort({_id: -1}).limit(3);
       const result = await cursor.toArray();
       res.send(result)
+    })
+
+    app.get('/all-visa', async(req, res)=>{
+      const cursor = visaCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+
+    // for details
+    app.get(`/all-visa/:id`, async(req, res)=>{
+       const id = req.params.id
+       const query = {_id : new ObjectId(id)};
+       const result = await visaCollection.findOne(query)
+       res.send(result)
     })
 
     app.post('/visa', async(req, res)=>{
