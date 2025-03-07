@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const app = express();
+require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 
@@ -12,12 +13,11 @@ app.use(express.json());
 
 //  testing 
 
-// visaNavigator
-// m0r9jpGNjUUfjFOg
 
 
 
-const uri = "mongodb+srv://visaNavigator:m0r9jpGNjUUfjFOg@cluster0.teftn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.teftn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -34,6 +34,12 @@ async function run() {
     await client.connect();
 
     const visaCollection = client.db('visaDB').collection('visa')
+
+    app.get('/latest-visas', async(req, res)=>{
+      const cursor = visaCollection.find().sort({_id: -1}).limit(3);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
 
     app.post('/visa', async(req, res)=>{
       const addedVisa = req.body;
