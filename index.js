@@ -56,6 +56,32 @@ async function run() {
        res.send(result)
     })
 
+    // for update👇 
+
+    app.put('/all-visa/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert: true}
+      const updatedVisa = req.body;
+      const visa = {
+        $set: {
+          countryImg: updatedVisa.countryImg,
+          countryName: updatedVisa.countryName,
+          visaType: updatedVisa.visaType,
+          processingTime: updatedVisa.processingTime,
+          ageRestriction: updatedVisa.ageRestriction,
+          fee: updatedVisa.fee,
+          validity: updatedVisa.validity,
+          applicationMethod: updatedVisa.applicationMethod,
+          description: updatedVisa.description,
+          required_docs: updatedVisa.required_docs,
+         
+        }
+      }
+      const result = await visaCollection.updateOne(filter, visa, options)
+      res.send(result)
+    })
+
     app.get(`/all-visa/user/:name`, async(req, res)=>{
       const name = req.params.name;
       const query = {name: name};
