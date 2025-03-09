@@ -36,7 +36,7 @@ async function run() {
     const visaCollection = client.db('visaDB').collection('visa')
 
     app.get('/latest-visas', async(req, res)=>{
-      const cursor = visaCollection.find().sort({_id: -1}).limit(3);
+      const cursor = visaCollection.find().sort({_id: -1}).limit(6);
       const result = await cursor.toArray();
       res.send(result)
     })
@@ -54,6 +54,13 @@ async function run() {
        const query = {_id : new ObjectId(id)};
        const result = await visaCollection.findOne(query)
        res.send(result)
+    })
+
+    app.get(`/all-visa/user/:name`, async(req, res)=>{
+      const name = req.params.name;
+      const query = {name: name};
+      const result = await visaCollection.find(query).toArray()
+      res.send(result)
     })
 
     app.post('/visa', async(req, res)=>{
