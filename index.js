@@ -82,6 +82,14 @@ async function run() {
       res.send(result)
     })
 
+    // delete
+
+    app.delete('/all-visa/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await visaCollection.deleteOne(query)
+      res.send(result)
+    })
     app.get(`/all-visa/user/:name`, async(req, res)=>{
       const name = req.params.name;
       const query = {name: name};
